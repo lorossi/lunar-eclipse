@@ -6,11 +6,11 @@ class Line {
     this._max_len = max_len;
     this._noise = noise;
 
-    this._noise_len_scl = 0.01;
-    this._noise_theta_scl = 0.00125;
-    this._noise_alpha_scl = 0.1;
+    this._noise_len_scl = 0.1;
+    this._noise_theta_scl = 0.002;
+    this._noise_alpha_scl = 0.001;
 
-    this._nodes_num = 20;
+    this._nodes_num = 40;
     this._nodes = [];
     this._alpha = 0;
   }
@@ -33,7 +33,7 @@ class Line {
       const rho = this._generateNoise(rho_x, rho_y, nx + 10, ny + 10) * len;
 
       const theta =
-        this._generateNoise(theta_x, theta_y, nx + 20, ny + 20) * Math.PI * 2;
+        this._generateNoise(theta_x, theta_y, nx + 20, ny + 20) * Math.PI * 3;
 
       dx += rho * Math.cos(theta);
       dy += rho * Math.sin(theta);
@@ -48,15 +48,16 @@ class Line {
       this._y * this._noise_alpha_scl,
       1) +
         1) /
-      75;
+      90;
   }
 
   show(ctx) {
     ctx.save();
     ctx.translate(this._x, this._y);
-    ctx.strokeStyle = `rgba(240, 240, 240, ${this._alpha})`;
+    ctx.strokeStyle = `rgba(230, 230, 230, ${this._alpha})`;
     ctx.lineWidth = 1;
 
+    // https://stackoverflow.com/questions/7054272/how-to-draw-smooth-curve-through-n-points-using-javascript-html5-canvas
     ctx.moveTo(0, 0);
     this._nodes.forEach((n) => ctx.lineTo(n.x, n.y));
     ctx.stroke();
@@ -64,7 +65,7 @@ class Line {
     ctx.restore();
   }
 
-  _generateNoise(x = 0, y = 0, z = 0, w = 0, depth = 3) {
+  _generateNoise(x = 0, y = 0, z = 0, w = 0, depth = 4) {
     let n = 0;
     let a_sum = 0;
 

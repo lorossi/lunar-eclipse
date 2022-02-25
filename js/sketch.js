@@ -1,12 +1,22 @@
 class Sketch extends Engine {
   preload() {
-    this._scl = 0.4;
-    this._lines_num = 200;
-    this._duration = 600;
-    this._noise_r = 0.1;
+    this._scl = 0.3;
+    this._lines_num = 500;
+    this._duration = 900;
+    this._noise_r = 0.5;
+    this._recording = false;
+    this._on_demand = true;
   }
 
   setup() {
+    if (this._recording) {
+      this._capturer = new CCapture({
+        format: "png",
+      });
+      this._capturer.start();
+      console.log("Recording started");
+    }
+
     this._noise = new SimplexNoise();
 
     this._lines = [];
@@ -29,8 +39,8 @@ class Sketch extends Engine {
     this.ctx.translate(this.width / 2, this.height / 2);
     this.ctx.scale(this._scl, this._scl);
 
-    this.ctx.strokeStyle = "rgb(245, 245, 245)";
-    this.ctx.lineWidth = 4;
+    this.ctx.strokeStyle = "rgb(230, 230, 230)";
+    this.ctx.lineWidth = 6;
 
     this.ctx.beginPath();
     this.ctx.arc(0, 0, this.width / 2 - this.ctx.lineWidth / 2, 0, Math.PI * 2);
@@ -46,9 +56,34 @@ class Sketch extends Engine {
     });
 
     this.ctx.restore();
+
+    if (this._recording) {
+      if (this.frameCount % 60 == 0) {
+        console.log(`Recording at ${Math.floor(percent * 100)}%`);
+      }
+      if (this.frameCount < this._duration) {
+        this._capturer.capture(this.canvas);
+      } else {
+        this._recording = false;
+        this._capturer.stop();
+        this._capturer.save();
+        console.log("Recording complete");
+      }
+    } else if (this._on_demand) {
+      this.noLoop();
+    }
   }
 
   click() {
-    this.saveFrame();
+    if (this._on_demand) {
+      this.setup();
+      this.loop();
+    }
+  }
+
+  keydown(e) {
+    if (e.keyCode == 13 && this._on_demand) {
+      this.saveFrame();
+    }
   }
 }
