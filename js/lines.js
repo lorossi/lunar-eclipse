@@ -6,9 +6,9 @@ class Line {
     this._max_len = max_len;
     this._noise = noise;
 
-    this._noise_len_scl = 0.1;
-    this._noise_theta_scl = 0.002;
-    this._noise_alpha_scl = 0.001;
+    this._noise_len_scl = 0.15;
+    this._noise_theta_scl = 0.003;
+    this._noise_alpha_scl = 0.002;
 
     this._nodes_num = 40;
     this._nodes = [];

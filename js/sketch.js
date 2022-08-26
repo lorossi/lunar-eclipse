@@ -1,22 +1,11 @@
 class Sketch extends Engine {
   preload() {
-    this._scl = 0.3;
-    this._lines_num = 500;
-    this._duration = 900;
-    this._noise_r = 0.5;
-    this._recording = false;
-    this._on_demand = true;
+    this._scl = 0.6;
+    this._lines_num = 750;
+    this._noise_r = 0.25;
   }
 
   setup() {
-    if (this._recording) {
-      this._capturer = new CCapture({
-        format: "png",
-      });
-      this._capturer.start();
-      console.log("Recording started");
-    }
-
     this._noise = new SimplexNoise();
 
     this._lines = [];
@@ -27,16 +16,18 @@ class Sketch extends Engine {
 
       this._lines.push(new Line(x, y, max_len, this._noise));
     }
+
+    this._theta = Math.random() * Math.PI * 2;
   }
 
   draw() {
-    const percent = (this.frameCount % this._duration) / this._duration;
-    const nx = this._noise_r * (1 + Math.cos(percent * Math.PI * 2));
-    const ny = this._noise_r * (1 + Math.sin(percent * Math.PI * 2));
+    const nx = Math.random() * 10000;
+    const ny = Math.random() * 10000;
 
     this.ctx.save();
     this.background("rgb(15, 15, 15)");
     this.ctx.translate(this.width / 2, this.height / 2);
+    this.ctx.rotate(this._theta);
     this.ctx.scale(this._scl, this._scl);
 
     this.ctx.strokeStyle = "rgb(230, 230, 230)";
@@ -57,32 +48,16 @@ class Sketch extends Engine {
 
     this.ctx.restore();
 
-    if (this._recording) {
-      if (this.frameCount % 60 == 0) {
-        console.log(`Recording at ${Math.floor(percent * 100)}%`);
-      }
-      if (this.frameCount < this._duration) {
-        this._capturer.capture(this.canvas);
-      } else {
-        this._recording = false;
-        this._capturer.stop();
-        this._capturer.save();
-        console.log("Recording complete");
-      }
-    } else if (this._on_demand) {
-      this.noLoop();
-    }
+    this.noLoop();
   }
 
   click() {
-    if (this._on_demand) {
-      this.setup();
-      this.loop();
-    }
+    this.setup();
+    this.draw();
   }
 
   keydown(e) {
-    if (e.keyCode == 13 && this._on_demand) {
+    if (e.keyCode == 13) {
       this.saveFrame();
     }
   }
