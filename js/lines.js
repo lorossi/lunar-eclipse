@@ -1,36 +1,30 @@
 class Line {
-  constructor(x, y, len, noise_scl, noise) {
+  constructor(x, y, max_len, noise_scl, noise) {
     this._x = x;
     this._y = y;
-    this._max_len = len;
+    this._max_len = max_len;
     this._noise = noise;
     this.noise_scl = noise_scl;
 
-    this._nodes_num = len / 10;
-    this._nodes = [];
-    this._alpha = 0;
-    this._noise_len_scl = 4;
+    this._alpha = 0.025;
   }
 
-  move(nx, ny) {
+  generate() {
     this._nodes = [];
 
-    const len = this._max_len / this._nodes_num;
+    const segment_len = 20;
 
     let dx = 0;
     let dy = 0;
 
-    for (let i = 0; i < this._nodes_num; i++) {
-      const rho_x = this._noise_len_scl * (dx + this._x);
-      const rho_y = this._noise_len_scl * (dy + this._y);
-
+    while (this._distFromCenter(dx, dy) < this._max_len) {
       const theta_x = this.noise_scl * (dx + this._x);
       const theta_y = this.noise_scl * (dy + this._y);
 
-      const rho = this._generateNoise(rho_x, rho_y, nx + 10, ny + 10, 1) * len;
+      const rho = Math.random() * segment_len;
 
       const theta =
-        this._generateNoise(theta_x, theta_y, nx + 20, ny + 20) * Math.PI * 3;
+        this._generateNoise(theta_x, theta_y, 200, 200) * Math.PI * 3;
 
       dx += rho * Math.cos(theta);
       dy += rho * Math.sin(theta);
@@ -42,7 +36,7 @@ class Line {
   show(ctx) {
     ctx.save();
     ctx.translate(this._x, this._y);
-    ctx.strokeStyle = "rgba(220, 220, 220, 0.05)";
+    ctx.strokeStyle = `rgba(240, 240, 240, ${this._alpha})`;
     ctx.lineWidth = 1;
 
     ctx.moveTo(0, 0);
@@ -55,7 +49,7 @@ class Line {
     ctx.restore();
   }
 
-  _generateNoise(x = 0, y = 0, z = 0, w = 0, depth = 4) {
+  _generateNoise(x = 0, y = 0, z = 0, w = 0, depth = 2) {
     let n = 0;
     let a_sum = 0;
 
@@ -66,5 +60,9 @@ class Line {
       n += ((this._noise.noise4D(x * f, y * f, z * f, w * f) + 1) / 2) * a;
     }
     return n / a_sum;
+  }
+
+  _distFromCenter(x, y) {
+    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
   }
 }
