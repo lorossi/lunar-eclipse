@@ -1,20 +1,25 @@
 class Sketch extends Engine {
   preload() {
-    this._scl = 0.6;
-    this._lines_num = 750;
-    this._noise_r = 0.25;
+    this._scl = 0.6; // scale of the sketch
+    this._lines_num = 250; // numbers of lines in the circle
+    this._noise_scl = 0.0015; // scale of the angle
   }
 
   setup() {
-    this._noise = new SimplexNoise();
+    const noise = new SimplexNoise();
+
+    const noise_scl = rand(0.5, 2) * this._noise_scl;
 
     this._lines = [];
-    const max_len = this.width;
     for (let i = 0; i < this._lines_num; i++) {
-      const x = (Math.random() - 0.5) * this.width;
-      const y = (Math.random() - 0.5) * this.height;
+      const len = this.width * rand(3, 10);
+      const rho = (this.width / 2) * rand();
+      const theta = Math.PI * 2 * rand();
 
-      this._lines.push(new Line(x, y, max_len, this._noise));
+      const x = rho * Math.cos(theta);
+      const y = rho * Math.sin(theta);
+
+      this._lines.push(new Line(x, y, len, noise_scl, noise));
     }
 
     this._theta = Math.random() * Math.PI * 2;
@@ -62,3 +67,7 @@ class Sketch extends Engine {
     }
   }
 }
+
+const rand = (min = 0, max = 1) => {
+  return Math.random() * (max - min) + min;
+};

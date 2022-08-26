@@ -1,18 +1,15 @@
 class Line {
-  constructor(x, y, max_len, noise) {
+  constructor(x, y, len, noise_scl, noise) {
     this._x = x;
     this._y = y;
-
-    this._max_len = max_len;
+    this._max_len = len;
     this._noise = noise;
+    this.noise_scl = noise_scl;
 
-    this._noise_len_scl = 0.15;
-    this._noise_theta_scl = 0.003;
-    this._noise_alpha_scl = 0.002;
-
-    this._nodes_num = 40;
+    this._nodes_num = len / 10;
     this._nodes = [];
     this._alpha = 0;
+    this._noise_len_scl = 4;
   }
 
   move(nx, ny) {
@@ -27,10 +24,10 @@ class Line {
       const rho_x = this._noise_len_scl * (dx + this._x);
       const rho_y = this._noise_len_scl * (dy + this._y);
 
-      const theta_x = this._noise_theta_scl * (dx + this._x);
-      const theta_y = this._noise_theta_scl * (dy + this._y);
+      const theta_x = this.noise_scl * (dx + this._x);
+      const theta_y = this.noise_scl * (dy + this._y);
 
-      const rho = this._generateNoise(rho_x, rho_y, nx + 10, ny + 10) * len;
+      const rho = this._generateNoise(rho_x, rho_y, nx + 10, ny + 10, 1) * len;
 
       const theta =
         this._generateNoise(theta_x, theta_y, nx + 20, ny + 20) * Math.PI * 3;
@@ -40,26 +37,19 @@ class Line {
 
       this._nodes.push(new Point(Math.floor(dx), Math.floor(dy)));
     }
-
-    this._alpha =
-      ((nx,
-      ny,
-      this._x * this._noise_alpha_scl,
-      this._y * this._noise_alpha_scl,
-      1) +
-        1) /
-      90;
   }
 
   show(ctx) {
     ctx.save();
     ctx.translate(this._x, this._y);
-    ctx.strokeStyle = `rgba(230, 230, 230, ${this._alpha})`;
+    ctx.strokeStyle = "rgba(220, 220, 220, 0.05)";
     ctx.lineWidth = 1;
 
-    // https://stackoverflow.com/questions/7054272/how-to-draw-smooth-curve-through-n-points-using-javascript-html5-canvas
     ctx.moveTo(0, 0);
-    this._nodes.forEach((n) => ctx.lineTo(n.x, n.y));
+    this._nodes.forEach((n) => {
+      ctx.lineTo(n.x, n.y);
+    });
+
     ctx.stroke();
 
     ctx.restore();
