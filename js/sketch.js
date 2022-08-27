@@ -1,8 +1,8 @@
 class Sketch extends Engine {
   preload() {
     this._scl = 0.8; // scale of the sketch
-    this._lines_num = 350; // numbers of lines in the circle
-    this._noise_scl = 0.0005;
+    this._lines_num = 400; // numbers of lines in the circle
+    this._noise_scl = 0.001;
   }
 
   setup() {
@@ -30,7 +30,7 @@ class Sketch extends Engine {
     this.ctx.rotate(this._theta);
     this.ctx.scale(this._scl, this._scl);
 
-    this.ctx.strokeStyle = "rgb(230, 230, 230)";
+    this.ctx.strokeStyle = "rgb(240, 240, 240)";
     this.ctx.lineWidth = 6;
 
     this.ctx.beginPath();

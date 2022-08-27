@@ -1,3 +1,5 @@
+const ALPHA = 0.02;
+
 class Line {
   constructor(x, y, max_len, noise_scl, noise) {
     this._x = x;
@@ -5,26 +7,23 @@ class Line {
     this._max_len = max_len;
     this._noise = noise;
     this.noise_scl = noise_scl;
-
-    this._alpha = 0.025;
   }
 
   generate() {
     this._nodes = [];
 
     const segment_len = 20;
-
     let dx = 0;
     let dy = 0;
 
-    while (this._distFromCenter(dx, dy) < this._max_len) {
+    while (this._distFromCenter(this._x + dx, this._y + dy) < this._max_len) {
       const theta_x = this.noise_scl * (dx + this._x);
       const theta_y = this.noise_scl * (dy + this._y);
 
       const rho = Math.random() * segment_len;
 
       const theta =
-        this._generateNoise(theta_x, theta_y, 200, 200) * Math.PI * 3;
+        this._generateNoise(theta_x, theta_y, 200, 200) * Math.PI * 2;
 
       dx += rho * Math.cos(theta);
       dy += rho * Math.sin(theta);
@@ -36,7 +35,7 @@ class Line {
   show(ctx) {
     ctx.save();
     ctx.translate(this._x, this._y);
-    ctx.strokeStyle = `rgba(240, 240, 240, ${this._alpha})`;
+    ctx.strokeStyle = `rgba(250, 250, 250, ${ALPHA})`;
     ctx.lineWidth = 1;
 
     ctx.moveTo(0, 0);
