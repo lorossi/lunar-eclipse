@@ -8,6 +8,10 @@ class Sketch extends Engine {
   setup() {
     const noise = new SimplexNoise();
     const noise_scl = this._noise_scl * rand(1, 4); // actual noise scale is randomized
+    console.log(
+      "%c Generating new background...",
+      "color: red;font-size: 1.5em;"
+    );
 
     // initialize the lines array
     this._lines = [];
@@ -25,9 +29,12 @@ class Sketch extends Engine {
 
     // generate the lines
     this._lines.forEach((l) => l.generate());
+
+    console.log("%c ...done!", "color: green;font-size: 1.5em;");
   }
 
   draw() {
+    console.log("%c Drawing new background...", "color: red;font-size: 1.5em;");
     // all the coordinates are relative to the center of the canvas
     this.ctx.save();
     this.background("rgb(15, 15, 15)");
@@ -54,11 +61,16 @@ class Sketch extends Engine {
     });
 
     this.ctx.restore();
+
+    console.log("%c ...done!", "color: green;font-size: 1.5em;");
+
+    // stop looping
     this.noLoop();
   }
 
   click() {
     this.setup();
+    this.background("rgb(15, 15, 15)");
     this.draw();
   }
 
@@ -75,7 +87,7 @@ class Sketch extends Engine {
 
 /**
  * Get a random number between min and max
- * @param {number} min - minimum number
+ * @param {number}  min - minimum number
  * @param {number} max - maximum number
  * @returns {number} random number between min and max (included)
  */

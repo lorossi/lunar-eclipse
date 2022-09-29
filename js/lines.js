@@ -59,7 +59,7 @@ class Line {
       const f = Math.pow(2, i);
       const a = Math.pow(2, -i);
       a_sum += a;
-      n += ((this._noise.noise4D(x * f, y * f, z * f, w * f) + 1) / 2) * a;
+      n += ((this._noise.noise(x * f, y * f, z * f, w * f) + 1) / 2) * a;
     }
     return n / a_sum;
   }
