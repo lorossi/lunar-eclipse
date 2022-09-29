@@ -1,25 +1,41 @@
+// Press ENTER to save a frame
+// Press Q to switch to high quality
+// Press W to switch to low quality (ON BY DEFAULT)
+
 class Sketch extends Engine {
   preload() {
     this._scl = 0.8; // scale of the sketch
     this._lines_num = 400; // numbers of lines in the circle
     this._noise_scl = 0.001; // simplex noise scale
+    this._low_quality = true; // preview mode
+
+    console.log("Press ENTER to save a frame");
+    console.log("Press Q to switch to high quality");
+    console.log("Press W to switch to low quality - ON BY DEFAULT");
+    console.log("Click to generate a new frame");
   }
 
   setup() {
+    const timestamp = Date.now();
+
+    // initialize random generators
+    const rand = new XOR128(timestamp);
     const noise = new SimplexNoise();
-    const noise_scl = this._noise_scl * rand(1, 4); // actual noise scale is randomized
-    console.log(
-      "%c Generating new background...",
-      "color: red;font-size: 1.5em;"
-    );
+    // create title
+    this._title = `noise-${rand.shuffle_string(timestamp.toString())}`;
+    // set page title
+    document.title = this._title;
+
+    const noise_scl = this._noise_scl * rand.random(1, 4); // actual noise scale is randomized
+    console.log("%c Generating new background...", "color: red;");
 
     // initialize the lines array
     this._lines = [];
     // create the lines
     for (let i = 0; i < this._lines_num; i++) {
       // start position is randomized in the circle
-      const rho = rand(0, this.width / 2);
-      const theta = rand(0, Math.PI * 2);
+      const rho = rand.random(0, this.width / 2);
+      const theta = rand.random(0, Math.PI * 2);
 
       const x = rho * Math.cos(theta);
       const y = rho * Math.sin(theta);
@@ -30,11 +46,11 @@ class Sketch extends Engine {
     // generate the lines
     this._lines.forEach((l) => l.generate());
 
-    console.log("%c ...done!", "color: green;font-size: 1.5em;");
+    console.log("%c ...done!", "color: green;");
   }
 
   draw() {
-    console.log("%c Drawing new background...", "color: red;font-size: 1.5em;");
+    console.log("%c Drawing new background...", "color: red;");
     // all the coordinates are relative to the center of the canvas
     this.ctx.save();
     this.background("rgb(15, 15, 15)");
@@ -56,13 +72,20 @@ class Sketch extends Engine {
     this.ctx.clip();
 
     // draw the lines
-    this._lines.forEach((l) => {
-      l.show(this.ctx);
-    });
+    if (this._low_quality) {
+      for (let i = 0; i < this._lines.length; i += 5) {
+        const l = this._lines[i];
+        l.show(this.ctx, true);
+      }
+    } else {
+      this._lines.forEach((l) => {
+        l.show(this.ctx, false);
+      });
+    }
 
     this.ctx.restore();
 
-    console.log("%c ...done!", "color: green;font-size: 1.5em;");
+    console.log("%c ...done!", "color: green;");
 
     // stop looping
     this.noLoop();
@@ -74,23 +97,23 @@ class Sketch extends Engine {
     this.draw();
   }
 
-  keydown(e) {
-    switch (e.keyCode) {
-      case 13: // enter
-        this.saveFrame();
+  keyDown(_, v) {
+    switch (v) {
+      case 13: // ENTER
+        this.saveFrame(this._title);
+        break;
+      case 81: // Q
+        console.log("Drawing in high quality");
+        this._low_quality = false;
+        this.draw();
+        break;
+      case 87: // W
+        console.log("Drawing in low quality");
+        this._low_quality = true;
+        this.draw();
         break;
       default:
         break;
     }
   }
 }
-
-/**
- * Get a random number between min and max
- * @param {number}  min - minimum number
- * @param {number} max - maximum number
- * @returns {number} random number between min and max (included)
- */
-const rand = (min = 0, max = 1) => {
-  return Math.random() * (max - min) + min;
-};

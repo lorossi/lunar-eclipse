@@ -35,16 +35,25 @@ class Line {
     }
   }
 
-  show(ctx) {
+  show(ctx, preview = false) {
     ctx.save();
     ctx.translate(this._x, this._y);
     ctx.strokeStyle = `rgba(250, 250, 250, ${ALPHA})`;
     ctx.lineWidth = 1;
 
     ctx.moveTo(0, 0);
-    this._nodes.forEach((n) => {
-      ctx.lineTo(n.x, n.y);
-    });
+
+    if (preview) {
+      for (let i = 0; i < this._nodes.length; i += 5) {
+        const n = this._nodes[i];
+        ctx.lineTo(n.x, n.y);
+      }
+    } else {
+      this._nodes.forEach((n) => {
+        ctx.lineTo(n.x, n.y);
+      });
+    }
+
     ctx.stroke();
 
     ctx.restore();
