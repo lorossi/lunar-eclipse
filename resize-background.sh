@@ -7,7 +7,8 @@ if [[ -z $1 ]]; then
     echo "No image specified"
     exit 1
 fi;
-# set source path
+
+# load resize from argument
 if [[ -z $2 ]]; then
     echo -e "defaulting to $default_resize% of screen size"
     resize=$default_resize
@@ -15,7 +16,8 @@ else
     echo -e "resizing center to $2% of screen size"
     resize=$2
 fi;
-# set output path
+
+# load output from argument
 if [[ -z $3 ]]; then
     echo -e "defaulting to $default_output as output path"
     output=$default_output
