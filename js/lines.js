@@ -44,7 +44,7 @@ class Line {
     ctx.moveTo(0, 0);
 
     if (preview) {
-      for (let i = 0; i < this._nodes.length; i += 5) {
+      for (let i = 0; i < this._nodes.length; i += 10) {
         const n = this._nodes[i];
         ctx.lineTo(n.x, n.y);
       }
@@ -76,5 +76,9 @@ class Line {
   // returns the distance from the center of the canvas
   _distFromCenter(x, y) {
     return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  }
+
+  get nodes_num() {
+    return this._nodes.length;
   }
 }
