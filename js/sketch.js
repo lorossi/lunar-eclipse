@@ -7,8 +7,8 @@ class Sketch extends Engine {
     this._scl = 0.8; // scale of the sketch
     this._lines_num = 400; // numbers of lines in the circle
     this._noise_scl = 0.001; // simplex noise scale
-    this._preview = false; // preview mode
-    this._auto = true; // keep downloading new
+    this._preview = true; // preview mode
+    this._auto = false; // keep downloading new
 
     console.clear();
     console.log("Press ENTER to save a frame");
