@@ -30,6 +30,7 @@ class Sketch extends Engine {
     const noise = new SimplexNoise(timestamp);
     // create title
     this._title = `noise-${rand.shuffle_string(timestamp.toString())}`;
+    this._theta = rand.random() * Math.PI * 2;
     // set page title
     document.title = this._title;
 
@@ -80,6 +81,7 @@ class Sketch extends Engine {
     // draw a disclaimer
     if (this._preview) {
       this.ctx.save();
+      this.ctx.rotate(-this._theta);
       this.ctx.fillStyle = "rgb(255, 255, 255)";
       this.ctx.font = "40px Roboto";
       this.ctx.textAlign = "left";
