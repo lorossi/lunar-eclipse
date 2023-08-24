@@ -2,6 +2,10 @@
 // Press Q to switch to high quality
 // Press W to switch to low quality (ON BY DEFAULT)
 
+import { Engine, SimplexNoise } from "./engine.js";
+import { XOR128 } from "./xor128.js";
+import { Line } from "./lines.js";
+
 class Sketch extends Engine {
   preload() {
     this._scl = 0.8; // scale of the sketch
@@ -164,3 +168,5 @@ class Sketch extends Engine {
     }
   }
 }
+
+export { Sketch };

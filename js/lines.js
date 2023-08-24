@@ -1,3 +1,5 @@
+import { Point } from "./engine.js";
+
 const ALPHA = 0.02;
 
 class Line {
@@ -82,3 +84,5 @@ class Line {
     return this._nodes.length;
   }
 }
+
+export { Line };
