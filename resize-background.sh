@@ -2,6 +2,15 @@
 default_resize=40
 default_output=background.png
 
+# check if imagemagick is installed, if not prompt to install and exit
+if ! command -v convert &> /dev/null
+then
+    echo "imagemagick could not be found"
+    echo "install imagemagick with your package manager"
+    echo "exiting..."
+    exit
+fi
+
 # load image from argument
 if [[ -z $1 ]]; then
     echo "No image specified"
