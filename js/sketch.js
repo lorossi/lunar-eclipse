@@ -11,13 +11,14 @@ class Sketch extends Engine {
     this._scl = 0.8; // scale of the sketch
     this._lines_num = 400; // numbers of lines in the circle
     this._noise_scl = 0.001; // simplex noise scale
-    this._preview = false; // preview mode
-    this._auto = true; // keep downloading new
+    this._preview = true; // preview mode
+    this._auto = false; // keep downloading new
 
     console.clear();
     console.log("Press ENTER to save a frame");
     console.log("Press Q to switch to high quality");
     console.log("Press W to switch to low quality - ON BY DEFAULT");
+    console.log("Press E to generate a new frame");
     console.log("Click to generate a new frame");
   }
 
@@ -86,7 +87,7 @@ class Sketch extends Engine {
     if (this._preview) {
       this.ctx.save();
       this.ctx.rotate(-this._theta);
-      this.ctx.fillStyle = "rgb(255, 255, 255)";
+      this.ctx.fillStyle = "rgb(255, 0, 0)";
       this.ctx.font = "40px Roboto";
       this.ctx.textAlign = "left";
       this.ctx.textBaseline = "top";
@@ -142,10 +143,13 @@ class Sketch extends Engine {
     }
   }
 
-  click() {
+  _newFrame() {
     this.setup();
-    this.background("rgb(15, 15, 15)");
     this.draw();
+  }
+
+  click() {
+    this._newFrame();
   }
 
   keyDown(_, v) {
@@ -163,6 +167,9 @@ class Sketch extends Engine {
         this._preview = true;
         this.draw();
         break;
+      case 69: // E
+        console.log("Generating new frame");
+        this._newFrame();
       default:
         break;
     }
